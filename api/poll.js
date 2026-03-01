@@ -1,50 +1,39 @@
+// api/poll.js
 import fetch from 'node-fetch';
 import { getProxyAgent, getProxyInfo } from '../lib/proxy.js';
 import { getHeaders } from '../lib/headers.js';
 import { parseSMS, formatSMS } from '../lib/parser.js';
+import { getCookies, addSentId, isSent, updateStats } from '../lib/storage.js';
 import { sendTelegram } from '../lib/telegram.js';
 
 const BASE_URL = "https://www.ivasms.com";
 
-// Simple in-memory storage (akan reset setiap deploy)
-// Untuk production pake Vercel KV atau database
-let storedCookies = null;
-let sentIds = new Set();
-
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    
-    // POST untuk set cookies, GET untuk poll
-    if (req.method === 'POST') {
-        const { cookies } = req.body;
-        if (cookies) {
-            storedCookies = cookies;
-            return res.status(200).json({ success: true, message: 'Cookies stored' });
-        }
-    }
-    
-    if (req.method !== 'GET') {
-        return res.status(405).json({ error: 'Method not allowed' });
-    }
-    
-    if (!storedCookies) {
-        return res.status(401).json({ error: 'No cookies, please login first' });
-    }
+    res.setHeader('Content-Type', 'application/json');
     
     try {
+        const cookies = await getCookies();
+        
+        if (!cookies) {
+            return res.status(401).json({ 
+                success: false, 
+                error: 'No cookies. Please login first.' 
+            });
+        }
+        
         const proxyAgent = getProxyAgent();
         const proxyInfo = getProxyInfo();
+        const cookieStr = Object.entries(cookies).map(([k,v]) => `${k}=${v}`).join('; ');
         
-        const cookieStr = Object.entries(storedCookies).map(([k,v]) => `${k}=${v}`).join('; ');
-        
-        // Set date range (last 7 days)
+        // Date range
         const end = new Date();
         const start = new Date();
         start.setDate(start.getDate() - 7);
         
         const format = d => d.toISOString().split('T')[0];
         
-        const res = await fetch(
+        const response = await fetch(
             `${BASE_URL}/portal/sms/received?start_date=${format(start)}&end_date=${format(end)}`,
             {
                 agent: proxyAgent,
@@ -52,25 +41,33 @@ export default async function handler(req, res) {
             }
         );
         
-        if (!res.ok) {
-            if (res.status === 302) {
-                throw new Error('Session expired');
-            }
-            throw new Error(`HTTP ${res.status}`);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
         }
         
-        const html = await res.text();
+        const html = await response.text();
         const allSMS = parseSMS(html);
         
-        // Filter SMS baru
-        const newSMS = allSMS.filter(s => !sentIds.has(s.id));
+        // Filter new SMS
+        const newSMS = [];
+        for (const sms of allSMS) {
+            const sent = await isSent(sms.id);
+            if (!sent) {
+                newSMS.push(sms);
+            }
+        }
         
-        // Kirim ke Telegram
+        // Send to Telegram
         for (const sms of newSMS) {
             const formatted = formatSMS(sms);
             await sendTelegram(formatted, 'SMS');
-            sentIds.add(sms.id);
+            await addSentId(sms.id);
         }
+        
+        await updateStats({ 
+            lastPoll: Date.now(),
+            lastProxy: proxyInfo 
+        });
         
         res.status(200).json({
             success: true,
