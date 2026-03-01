@@ -3,324 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IVASMS - Himmel Bot</title>
+    <title>IVASMS - VERCEL</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
         }
-        
         .container {
+            max-width: 800px;
+            margin: 0 auto;
             background: white;
             border-radius: 20px;
-            padding: 40px;
+            padding: 30px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 800px;
-            width: 100%;
         }
-        
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 32px;
-        }
-        
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        
-        .status-card {
+        h1 { color: #333; margin-bottom: 10px; }
+        .subtitle { color: #666; margin-bottom: 30px; }
+        .status {
             background: #f8f9fa;
-            border-radius: 15px;
+            border-radius: 10px;
             padding: 20px;
             margin-bottom: 30px;
             border-left: 5px solid #667eea;
         }
-        
         .status-item {
             display: flex;
             justify-content: space-between;
             margin: 10px 0;
-            padding: 5px 0;
         }
-        
-        .status-label {
-            color: #555;
-            font-weight: 500;
-        }
-        
-        .status-value {
-            font-weight: 600;
-        }
-        
-        .online {
-            color: #28a745;
-        }
-        
-        .offline {
-            color: #dc3545;
-        }
-        
+        .online { color: #28a745; font-weight: bold; }
+        .offline { color: #dc3545; font-weight: bold; }
         .button-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
             margin-bottom: 30px;
         }
-        
         .btn {
-            padding: 15px 25px;
+            padding: 12px 20px;
             border: none;
-            border-radius: 10px;
-            font-size: 16px;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
+            transition: 0.3s;
         }
-        
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #5a67d8;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-        
-        .btn-success {
-            background: #28a745;
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background: #218838;
-            transform: translateY(-2px);
-        }
-        
-        .btn-info {
-            background: #17a2b8;
-            color: white;
-        }
-        
-        .btn-info:hover {
-            background: #138496;
-            transform: translateY(-2px);
-        }
-        
-        .btn-warning {
-            background: #ffc107;
-            color: #333;
-        }
-        
-        .btn-warning:hover {
-            background: #e0a800;
-            transform: translateY(-2px);
-        }
-        
-        .log-section {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        
-        .log-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .log-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .log-content {
-            background: #2d2d2d;
+        .btn-primary { background: #667eea; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-info { background: #17a2b8; color: white; }
+        .btn-warning { background: #ffc107; color: black; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .log {
+            background: #1e1e1e;
             color: #00ff00;
             padding: 15px;
             border-radius: 10px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
+            font-family: monospace;
             max-height: 200px;
             overflow-y: auto;
         }
-        
-        .log-entry {
-            margin: 5px 0;
-            border-bottom: 1px solid #444;
-            padding-bottom: 5px;
-        }
-        
-        .time {
-            color: #888;
-            margin-right: 10px;
-        }
-        
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-left: 10px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
+        .log-entry { margin: 5px 0; border-bottom: 1px solid #333; padding: 5px; }
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
+            justify-content: center; align-items: center;
         }
-        
         .modal-content {
             background: white;
             padding: 30px;
-            border-radius: 20px;
+            border-radius: 15px;
             max-width: 400px;
             width: 90%;
         }
-        
-        .modal h2 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-        
-        .modal input {
+        input, textarea {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             margin: 10px 0;
             border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 5px;
         }
-        
-        .modal input:focus {
-            border-color: #667eea;
-            outline: none;
-        }
-        
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #999;
-            font-size: 14px;
-        }
+        .footer { text-align: center; margin-top: 30px; color: #999; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚀 IVASMS - Himmel Bot</h1>
-        <div class="subtitle">Interface untuk mengelola OTP IVASMS</div>
+        <h1>🚀 IVASMS VERCEL</h1>
+        <div class="subtitle">100% Working API</div>
         
-        <!-- Status Card -->
-        <div class="status-card" id="statusCard">
+        <div class="status" id="status">
             <div class="status-item">
-                <span class="status-label">Server Status:</span>
-                <span class="status-value online" id="serverStatus">Checking...</span>
+                <span>Server:</span>
+                <span id="serverStatus" class="online">Checking...</span>
             </div>
             <div class="status-item">
-                <span class="status-label">Last Login:</span>
-                <span class="status-value" id="lastLogin">-</span>
+                <span>Cookies:</span>
+                <span id="cookieCount">0</span>
             </div>
             <div class="status-item">
-                <span class="status-label">Cookies:</span>
-                <span class="status-value" id="cookieCount">0</span>
+                <span>SMS Terkirim:</span>
+                <span id="smsSent">0</span>
             </div>
             <div class="status-item">
-                <span class="status-label">SMS Terkirim:</span>
-                <span class="status-value" id="smsSent">0</span>
-            </div>
-            <div class="status-item">
-                <span class="status-label">WIB:</span>
-                <span class="status-value" id="wibTime">-</span>
+                <span>WIB:</span>
+                <span id="wibTime">-</span>
             </div>
         </div>
         
-        <!-- Button Grid -->
         <div class="button-grid">
-            <button class="btn btn-primary" onclick="showLoginModal()">
-                🔐 Login IVASMS
-            </button>
-            <button class="btn btn-success" onclick="pollSMS()">
-                📨 Poll SMS
-            </button>
-            <button class="btn btn-info" onclick="checkStatus()">
-                🔄 Refresh Status
-            </button>
-            <button class="btn btn-warning" onclick="setCookieManual()">
-                🍪 Set Cookie Manual
-            </button>
+            <button class="btn btn-primary" onclick="showLoginModal()">🔐 Login</button>
+            <button class="btn btn-success" onclick="pollSMS()">📨 Poll SMS</button>
+            <button class="btn btn-info" onclick="checkStatus()">🔄 Refresh</button>
+            <button class="btn btn-warning" onclick="showCookieModal()">🍪 Set Cookie</button>
         </div>
         
-        <!-- Log Section -->
-        <div class="log-section">
-            <div class="log-header">
-                <span class="log-title">📋 Activity Log</span>
-                <button onclick="clearLog()" style="background: none; border: none; color: #667eea; cursor: pointer;">Clear</button>
-            </div>
-            <div class="log-content" id="logContent">
-                <div class="log-entry">
-                    <span class="time">📌</span> System ready. Click buttons to start.
-                </div>
-            </div>
+        <div class="log" id="log">
+            <div class="log-entry">System ready. Click buttons to start.</div>
         </div>
         
-        <!-- Footer -->
-        <div class="footer">
-            ⚡ Powered by Himmel Bot | Telegram: @admin
-        </div>
+        <div class="footer">Powered by Himmel Bot | Telegram: @admin</div>
     </div>
     
     <!-- Login Modal -->
     <div class="modal" id="loginModal">
         <div class="modal-content">
-            <h2>🔐 Login IVASMS</h2>
-            <input type="email" id="email" placeholder="Email" value="admin@himmel.com">
-            <input type="password" id="password" placeholder="Password" value="himmel123">
-            <div class="modal-buttons">
-                <button class="btn btn-primary" style="flex: 1;" onclick="doLogin()">Login</button>
-                <button class="btn btn-warning" style="flex: 1;" onclick="hideLoginModal()">Cancel</button>
+            <h3>🔐 Login IVASMS</h3>
+            <input type="email" id="email" placeholder="Email" value="test@example.com">
+            <input type="password" id="password" placeholder="Password" value="password">
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-primary" style="flex:1" onclick="doLogin()">Login</button>
+                <button class="btn btn-warning" style="flex:1" onclick="hideLoginModal()">Cancel</button>
             </div>
         </div>
     </div>
@@ -328,38 +143,33 @@
     <!-- Cookie Modal -->
     <div class="modal" id="cookieModal">
         <div class="modal-content">
-            <h2>🍪 Set Cookie Manual</h2>
-            <textarea id="cookieInput" rows="5" style="width: 100%; padding: 10px; margin: 10px 0; border: 2px solid #e0e0e0; border-radius: 8px;" placeholder="Paste cookie string here..."></textarea>
-            <div class="modal-buttons">
-                <button class="btn btn-primary" style="flex: 1;" onclick="saveCookie()">Save</button>
-                <button class="btn btn-warning" style="flex: 1;" onclick="hideCookieModal()">Cancel</button>
+            <h3>🍪 Set Cookie Manual</h3>
+            <textarea id="cookieInput" rows="5" placeholder="Paste cookie string here..."></textarea>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-primary" style="flex:1" onclick="saveCookie()">Save</button>
+                <button class="btn btn-warning" style="flex:1" onclick="hideCookieModal()">Cancel</button>
             </div>
         </div>
     </div>
     
     <script>
         const API_BASE = window.location.origin;
-        let logCount = 0;
         
-        // Auto check status on load
         window.onload = function() {
             checkStatus();
-            updateWIB();
             setInterval(updateWIB, 1000);
         };
         
-        function addLog(message, type = 'info') {
-            const log = document.getElementById('logContent');
+        function addLog(msg, type = 'info') {
+            const log = document.getElementById('log');
             const time = new Date().toLocaleTimeString('id-ID');
             const emoji = type === 'error' ? '❌' : type === 'success' ? '✅' : '📌';
             
             const entry = document.createElement('div');
             entry.className = 'log-entry';
-            entry.innerHTML = `<span class="time">${emoji} ${time}</span> ${message}`;
-            
+            entry.innerHTML = `${emoji} ${time} - ${msg}`;
             log.insertBefore(entry, log.firstChild);
             
-            // Limit log
             if (log.children.length > 10) {
                 log.removeChild(log.lastChild);
             }
@@ -374,30 +184,21 @@
         
         async function checkStatus() {
             try {
-                addLog('Checking server status...');
-                
+                addLog('Checking status...');
                 const res = await fetch(`${API_BASE}/api/status`);
                 const data = await res.json();
                 
                 if (data.success) {
-                    document.getElementById('serverStatus').textContent = '🟢 ONLINE';
-                    document.getElementById('serverStatus').className = 'status-value online';
-                    
-                    if (data.status) {
-                        document.getElementById('lastLogin').textContent = 
-                            data.status.lastLogin ? new Date(data.status.lastLogin).toLocaleString('id-ID') : '-';
-                        document.getElementById('cookieCount').textContent = 
-                            data.status.cookieCount || 0;
-                        document.getElementById('smsSent').textContent = 
-                            data.status.smsSent || 0;
-                    }
-                    
-                    addLog('Status check successful', 'success');
+                    document.getElementById('serverStatus').textContent = 'ONLINE';
+                    document.getElementById('serverStatus').className = 'online';
+                    document.getElementById('cookieCount').textContent = data.status.cookieCount || 0;
+                    document.getElementById('smsSent').textContent = data.status.smsSent || 0;
+                    addLog('Status OK', 'success');
                 }
             } catch (err) {
-                document.getElementById('serverStatus').textContent = '🔴 OFFLINE';
-                document.getElementById('serverStatus').className = 'status-value offline';
-                addLog(`Status check failed: ${err.message}`, 'error');
+                document.getElementById('serverStatus').textContent = 'OFFLINE';
+                document.getElementById('serverStatus').className = 'offline';
+                addLog(`Error: ${err.message}`, 'error');
             }
         }
         
@@ -413,11 +214,6 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
-            if (!email || !password) {
-                addLog('Email and password required', 'error');
-                return;
-            }
-            
             hideLoginModal();
             addLog(`Logging in as ${email}...`);
             
@@ -431,13 +227,13 @@
                 const data = await res.json();
                 
                 if (data.success) {
-                    addLog(`✅ Login successful! Cookies: ${data.cookieCount} items`, 'success');
+                    addLog(`✅ Login success! Cookies: ${data.cookieCount}`, 'success');
                     checkStatus();
                 } else {
                     addLog(`❌ Login failed: ${data.error}`, 'error');
                 }
             } catch (err) {
-                addLog(`❌ Login error: ${err.message}`, 'error');
+                addLog(`❌ Error: ${err.message}`, 'error');
             }
         }
         
@@ -449,21 +245,17 @@
                 const data = await res.json();
                 
                 if (data.success) {
-                    if (data.new > 0) {
-                        addLog(`✅ Found ${data.new} new SMS (Total: ${data.total})`, 'success');
-                    } else {
-                        addLog(`ℹ️ No new SMS (Total: ${data.total})`, 'info');
-                    }
+                    addLog(`✅ Found ${data.new} new SMS (Total: ${data.total})`, 'success');
                     checkStatus();
                 } else {
                     addLog(`❌ Poll failed: ${data.error}`, 'error');
                 }
             } catch (err) {
-                addLog(`❌ Poll error: ${err.message}`, 'error');
+                addLog(`❌ Error: ${err.message}`, 'error');
             }
         }
         
-        function setCookieManual() {
+        function showCookieModal() {
             document.getElementById('cookieModal').style.display = 'flex';
         }
         
@@ -472,21 +264,21 @@
         }
         
         async function saveCookie() {
-            const cookieStr = document.getElementById('cookieInput').value;
+            const cookie = document.getElementById('cookieInput').value;
+            hideCookieModal();
             
-            if (!cookieStr) {
-                addLog('Cookie string required', 'error');
+            if (!cookie) {
+                addLog('❌ Cookie required', 'error');
                 return;
             }
             
-            hideCookieModal();
             addLog('Setting manual cookie...');
             
             try {
                 const res = await fetch(`${API_BASE}/api/setcookie`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ cookie: cookieStr })
+                    body: JSON.stringify({ cookie })
                 });
                 
                 const data = await res.json();
@@ -500,10 +292,6 @@
             } catch (err) {
                 addLog(`❌ Error: ${err.message}`, 'error');
             }
-        }
-        
-        function clearLog() {
-            document.getElementById('logContent').innerHTML = '<div class="log-entry"><span class="time">📌</span> Log cleared</div>';
         }
     </script>
 </body>
