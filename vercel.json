@@ -17,10 +17,7 @@
     },
     {
       "src": "/api/(.*)",
-      "dest": "/api/$1",
-      "headers": {
-        "Content-Type": "application/json"
-      }
+      "dest": "/api/$1"
     }
   ]
 }
